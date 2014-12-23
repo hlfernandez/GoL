@@ -1,6 +1,8 @@
 package hlfernandez.sing.ei.uvigo.es.gameoflife;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -17,7 +19,8 @@ import android.widget.Toast;
 public class MainActivity extends ActionBarActivity {
 
     public static final int CELL_SIZE = 50;
-    private static final int INTERVAL = 500;
+    private static int INTERVAL = 500;
+    private static final int RESULT_SETTINGS = 1;
 
     private Board board;
     private Thread animatorThread;
@@ -29,6 +32,9 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+        updatePreferences();
 
         gridview = (GridView) findViewById(R.id.gridView);
 
@@ -66,19 +72,29 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
+        final Button button3 = (Button) findViewById(R.id.btnRandom);
+        button3.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                board.setCells(Board.randomCells(numRows, numCols));
+                gridview.invalidateViews();
+            }
+        });
+
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
 
-                int row = position / numCols;
-                int col = position % numCols;
-                Cell newCell = new Cell(row, col);
-                if(board.getCells().contains(newCell)) {
-                    board.getCells().remove(newCell);
-                } else {
-                    board.getCells().add(newCell);
+                if(!auto) {
+                    int row = position / numCols;
+                    int col = position % numCols;
+                    Cell newCell = new Cell(row, col);
+                    if (board.getCells().contains(newCell)) {
+                        board.getCells().remove(newCell);
+                    } else {
+                        board.getCells().add(newCell);
+                    }
+                    gridview.invalidateViews();
                 }
-                gridview.invalidateViews();
             }
         });
 
@@ -92,6 +108,7 @@ public class MainActivity extends ActionBarActivity {
 
                 button.setEnabled(!isChecked);
                 button2.setEnabled(!isChecked);
+                button3.setEnabled(!isChecked);
                 auto = isChecked;
                 if(isChecked){
                     animatorThread = new Thread(new BoardAnimator());
@@ -121,11 +138,38 @@ public class MainActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        //if (id == R.id.action_settings) {
-        //    return true;
-        //}
+        if (id == R.id.action_settings) {
+            Intent i = new Intent(this, SettingsActivity.class);
+            startActivityForResult(i, RESULT_SETTINGS);
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case RESULT_SETTINGS:
+                updatePreferences();
+                break;
+
+        }
+
+    }
+
+    private void updatePreferences() {
+        SharedPreferences sharedPrefs = PreferenceManager
+                .getDefaultSharedPreferences(this);
+
+        try {
+            int newInterval = Integer.valueOf(sharedPrefs.getString("pref_interval", "NULL"));
+            INTERVAL = newInterval;
+        } catch(Exception e){
+
+        }
     }
 
     class BoardAnimator implements Runnable {

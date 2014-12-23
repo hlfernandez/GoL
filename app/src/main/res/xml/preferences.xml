@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <ListPreference
+        android:key="pref_interval"
+        android:entries="@array/syncFrequency"
+        android:summary="The time between generations"
+        android:entryValues="@array/syncFrequencyValues"
+        android:defaultValue="500"
+        android:title="Auto-play interval">
+    </ListPreference>
+</PreferenceScreen>

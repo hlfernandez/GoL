@@ -20,7 +20,7 @@
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Next"
+        android:text="@string/btn_next"
         android:id="@+id/btnNext"
         android:layout_alignParentTop="true" />
 
@@ -28,7 +28,7 @@
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Clear"
+        android:text="@string/btn_clear"
         android:id="@+id/btnClear"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/btnNext"
@@ -37,12 +37,22 @@
     <Switch
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Auto "
+        android:text="@string/lbl_auto"
         android:id="@+id/switch1"
         android:layout_above="@+id/gridView"
         android:layout_alignRight="@+id/gridView"
         android:layout_alignEnd="@+id/gridView"
         android:layout_alignTop="@+id/btnClear"
         android:checked="false" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_random"
+        android:id="@+id/btnRandom"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/btnClear"
+        android:layout_toEndOf="@+id/btnClear" />
 
 </RelativeLayout>
